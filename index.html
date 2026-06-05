@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>先生マイページ - ベストウェイ模擬試験</title>
+<title>åçãã¤ãã¼ã¸ - ãã¹ãã¦ã§ã¤æ¨¡æ¬è©¦é¨</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans, Meiryo, sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
@@ -49,24 +49,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans, Meiryo, sa
 </style>
 </head>
 <body>
-<div class="header"><h1>📋 先生マイページ</h1><p>ベストウェイ模擬試験お手伝いさん</p></div>
+<div class="header"><h1>ð åçãã¤ãã¼ã¸</h1><p>ãã¹ãã¦ã§ã¤æ¨¡æ¬è©¦é¨ãæä¼ããã</p></div>
 <div id="login-screen">
 <div class="card">
-<h2>🔐 ログイン</h2>
-<div class="form-group"><label>お名前（登録名）</label><input type="text" id="input-name" placeholder="例：山田　花子" autocomplete="name"></div>
-<div class="form-group"><label>生年月日</label><input type="date" id="input-dob"></div>
-<button class="btn-login" id="login-btn" onclick="doLogin()">ログイン</button>
+<h2>ð ã­ã°ã¤ã³</h2>
+<div class="form-group"><label>ãååï¼ç»é²åï¼</label><input type="text" id="input-name" placeholder="ä¾ï¼å±±ç°ãè±å­" autocomplete="name"></div>
+<div class="form-group"><label>çå¹´ææ¥</label><input type="date" id="input-dob" value="1976-01-29"></div>
+<button class="btn-login" id="login-btn" onclick="doLogin()">ã­ã°ã¤ã³</button>
 <div class="error-msg" id="login-error" style="display:none"></div>
 </div>
 </div>
 <div id="main-screen">
-<div class="user-bar"><div><span id="user-name-display"></span> 先生</div><button class="btn-logout" onclick="doLogout()">ログアウト</button></div>
+<div class="user-bar"><div><span id="user-name-display"></span> åç</div><button class="btn-logout" onclick="doLogout()">ã­ã°ã¢ã¦ã</button></div>
 <div class="tabs">
-<button class="tab-btn active" id="tab-btn-venue" onclick="switchTab('venue',this)">🏢 会場情報</button>
-<button class="tab-btn" id="tab-btn-students" onclick="switchTab('students',this)">👥 受講生一覧</button>
+<button class="tab-btn active" id="tab-btn-venue" onclick="switchTab('venue',this)">ð¢ ä¼å ´æå ±</button>
+<button class="tab-btn" id="tab-btn-students" onclick="switchTab('students',this)">ð¥ åè¬çä¸è¦§</button>
 </div>
 <div id="tab-venue" class="tab-content active">
-<div class="loading" id="venue-loading"><div class="spinner"></div>読み込み中...</div>
+<div class="loading" id="venue-loading"><div class="spinner"></div>èª­ã¿è¾¼ã¿ä¸­...</div>
 <div id="venue-content" style="display:none"></div>
 </div>
 <div id="tab-students" class="tab-content"><div id="students-content"></div></div>
@@ -81,55 +81,55 @@ var name=document.getElementById("input-name").value.trim();
 var dob=document.getElementById("input-dob").value;
 var err=document.getElementById("login-error");
 err.style.display="none";
-if(!name||!dob){err.textContent="お名前と生年月日を入力してください";err.style.display="block";return;}
+if(!name||!dob){err.textContent="ãååã¨çå¹´ææ¥ãå¥åãã¦ãã ãã";err.style.display="block";return;}
 var btn=document.getElementById("login-btn");
-btn.textContent="確認中...";btn.disabled=true;
-var name1=name.replace(/ /g,"　");
-var name2=name.replace(/　/g," ");
+btn.textContent="ç¢ºèªä¸­...";btn.disabled=true;
+var name1=name.replace(/ /g,"ã");
+var name2=name.replace(/ã/g," ");
 function tryQ(n,cb){
-var q="app="+APP+"&query="+encodeURIComponent("文字列__1行_ = \""+n+"\" and 生年月日 = \""+dob+"\"");
+var q="app="+APP+"&query="+encodeURIComponent("æå­å__1è¡_ = \""+n+"\" and çå¹´ææ¥ = \""+dob+"\"");
 fetch(apiUrl("/k/v1/records.json",q),{headers:{"X-Cybozu-API-Token":TOKEN}})
 .then(function(r){return r.json();})
 .then(function(d){cb(d.records&&d.records.length>0?d.records[0]:null);})
 .catch(function(){cb(null);});
 }
 tryQ(name1,function(r){
-if(r){rec=r;showMain();btn.textContent="ログイン";btn.disabled=false;}
+if(r){rec=r;showMain();btn.textContent="ã­ã°ã¤ã³";btn.disabled=false;}
 else{tryQ(name2,function(r2){
 if(r2){rec=r2;showMain();}
-else{err.textContent="お名前または生年月日が一致しませんでした。登録内容をご確認ください。";err.style.display="block";}
-btn.textContent="ログイン";btn.disabled=false;
+else{err.textContent="ãååã¾ãã¯çå¹´ææ¥ãä¸è´ãã¾ããã§ãããç»é²åå®¹ããç¢ºèªãã ããã";err.style.display="block";}
+btn.textContent="ã­ã°ã¤ã³";btn.disabled=false;
 });}
 });
 }
 function doLogout(){rec=null;document.getElementById("main-screen").style.display="none";document.getElementById("login-screen").style.display="block";document.getElementById("input-name").value="";document.getElementById("input-dob").value="";document.getElementById("login-error").style.display="none";switchTab("venue",document.getElementById("tab-btn-venue"));}
-function showMain(){document.getElementById("login-screen").style.display="none";document.getElementById("main-screen").style.display="block";document.getElementById("user-name-display").textContent=rec["文字列__1行_"].value;renderVenue();renderStudents();}
+function showMain(){document.getElementById("login-screen").style.display="none";document.getElementById("main-screen").style.display="block";document.getElementById("user-name-display").textContent=rec["æå­å__1è¡_"].value;renderVenue();renderStudents();}
 function switchTab(t,btn){document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});document.querySelectorAll(".tab-content").forEach(function(c){c.classList.remove("active");});btn.classList.add("active");document.getElementById("tab-"+t).classList.add("active");}
 function get(c){return rec[c]&&rec[c].value?rec[c].value:"";}
 function renderVenue(){
-var days=[{l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",m:"１日目最低開講人数",n:"１日目会場注意事項"},{l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",m:"２日目最低開講人数",n:"２日目会場注意事項"},{l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",m:"_3日目最低開講人数",n:"_3日目会場注意事項"},{l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",m:"_4日目最低開講人数",n:"_4日目会場注意事項"}];
-var h="<div class=\"section-card\"><h3>📌 基本情報</h3><div class=\"info-row\"><span class=\"info-label\">教室名</span><span>"+esc(get("教室名"))+"</span></div><div class=\"info-row\"><span class=\"info-label\">対応地域</span><span>"+esc(get("文字列__1行__0"))+"</span></div></div>";
+var days=[{l:"ç¬¬1å",v:"ï¼æ¥ç®ä¼å ´",a:"ï¼æ¥ç®ä¼å ´ä½æ",c:"ï¼æ¥ç®å®å¡",m:"ï¼æ¥ç®æä½éè¬äººæ°",n:"ï¼æ¥ç®ä¼å ´æ³¨æäºé "},{l:"ç¬¬2å",v:"ï¼æ¥ç®ä¼å ´",a:"ï¼æ¥ç®ä¼å ´ä½æ",c:"ï¼æ¥ç®å®å¡",m:"ï¼æ¥ç®æä½éè¬äººæ°",n:"ï¼æ¥ç®ä¼å ´æ³¨æäºé "},{l:"ç¬¬3å",v:"_3æ¥ç®ä¼å ´",a:"_3æ¥ç®ä¼å ´ä½æ",c:"_3æ¥ç®å®å¡",m:"_3æ¥ç®æä½éè¬äººæ°",n:"_3æ¥ç®ä¼å ´æ³¨æäºé "},{l:"ç¬¬4å",v:"_4æ¥ç®ä¼å ´_0",a:"_4æ¥ç®ä¼å ´ä½æ",c:"_4æ¥ç®å®å¡",m:"_4æ¥ç®æä½éè¬äººæ°",n:"_4æ¥ç®ä¼å ´æ³¨æäºé "}];
+var h="<div class=\"section-card\"><h3>ð åºæ¬æå ±</h3><div class=\"info-row\"><span class=\"info-label\">æå®¤å</span><span>"+esc(get("æå®¤å"))+"</span></div><div class=\"info-row\"><span class=\"info-label\">å¯¾å¿å°å</span><span>"+esc(get("æå­å__1è¡__0"))+"</span></div></div>";
 var any=false;
 days.forEach(function(d){var v=get(d.v);if(!v)return;any=true;
-h+="<div class=\"section-card\"><h3>📍 "+d.l+"</h3><div class=\"info-row\"><span class=\"info-label\">会場名</span><span>"+esc(v)+"</span></div><div class=\"info-row\"><span class=\"info-label\">住所</span><span>"+esc(get(d.a))+"</span></div>";
-if(get(d.c))h+="<div class=\"info-row\"><span class=\"info-label\">定員</span><span>"+esc(get(d.c))+" 名</span></div>";
-if(get(d.m))h+="<div class=\"info-row\"><span class=\"info-label\">最低開講数</span><span>"+esc(get(d.m))+" 名</span></div>";
-if(get(d.n))h+="<div class=\"info-row\"><span class=\"info-label\">注意事項</span><span>"+esc(get(d.n)).split("\n").join("<br>")+"</span></div>";
+h+="<div class=\"section-card\"><h3>ð "+d.l+"</h3><div class=\"info-row\"><span class=\"info-label\">ä¼å ´å</span><span>"+esc(v)+"</span></div><div class=\"info-row\"><span class=\"info-label\">ä½æ</span><span>"+esc(get(d.a))+"</span></div>";
+if(get(d.c))h+="<div class=\"info-row\"><span class=\"info-label\">å®å¡</span><span>"+esc(get(d.c))+" å</span></div>";
+if(get(d.m))h+="<div class=\"info-row\"><span class=\"info-label\">æä½éè¬æ°</span><span>"+esc(get(d.m))+" å</span></div>";
+if(get(d.n))h+="<div class=\"info-row\"><span class=\"info-label\">æ³¨æäºé </span><span>"+esc(get(d.n)).split("\n").join("<br>")+"</span></div>";
 h+="</div>";
 });
-if(!any)h+="<div class=\"section-card\"><div class=\"no-data\">会場情報がまだ登録されていません</div></div>";
+if(!any)h+="<div class=\"section-card\"><div class=\"no-data\">ä¼å ´æå ±ãã¾ã ç»é²ããã¦ãã¾ãã</div></div>";
 document.getElementById("venue-loading").style.display="none";
 var el=document.getElementById("venue-content");el.innerHTML=h;el.style.display="block";
 }
 function renderStudents(){
-var rounds=[{l:"第1回",c:"第1回受講生",d:"第1回申込日",n:"第1回受講生氏名",t:"第1回携帯電話番号"},{l:"第2回",c:"第2回受講生",d:"第2回申込日",n:"第2回受講生氏名",t:"第2回携帯電話番号"},{l:"第3回",c:"第3回受講生",d:"第3回申込日",n:"第3回受講生氏名",t:"第3回携帯電話番号"},{l:"第4回",c:"第4回受講生",d:"第4回申込日",n:"第4回受講生氏名",t:"第4回携帯電話番号"}];
+var rounds=[{l:"ç¬¬1å",c:"ç¬¬1ååè¬ç",d:"ç¬¬1åç³è¾¼æ¥",n:"ç¬¬1ååè¬çæ°å",t:"ç¬¬1åæºå¸¯é»è©±çªå·"},{l:"ç¬¬2å",c:"ç¬¬2ååè¬ç",d:"ç¬¬2åç³è¾¼æ¥",n:"ç¬¬2ååè¬çæ°å",t:"ç¬¬2åæºå¸¯é»è©±çªå·"},{l:"ç¬¬3å",c:"ç¬¬3ååè¬ç",d:"ç¬¬3åç³è¾¼æ¥",n:"ç¬¬3ååè¬çæ°å",t:"ç¬¬3åæºå¸¯é»è©±çªå·"},{l:"ç¬¬4å",c:"ç¬¬4ååè¬ç",d:"ç¬¬4åç³è¾¼æ¥",n:"ç¬¬4ååè¬çæ°å",t:"ç¬¬4åæºå¸¯é»è©±çªå·"}];
 var h="";
 rounds.forEach(function(r){
 var rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];
-h+="<div class=\"round-section\"><div class=\"round-header\"><h3>"+r.l+"</h3><span class=\"badge\">"+rows.length+" 名</span></div>";
-if(rows.length>0){h+="<table class=\"student-table\"><thead><tr><th>申込日</th><th>氏名</th><th>電話番号</th></tr></thead><tbody>";
+h+="<div class=\"round-section\"><div class=\"round-header\"><h3>"+r.l+"</h3><span class=\"badge\">"+rows.length+" å</span></div>";
+if(rows.length>0){h+="<table class=\"student-table\"><thead><tr><th>ç³è¾¼æ¥</th><th>æ°å</th><th>é»è©±çªå·</th></tr></thead><tbody>";
 rows.forEach(function(row){h+="<tr><td>"+esc(row.value[r.d]?row.value[r.d].value:"")+"</td><td>"+esc(row.value[r.n]?row.value[r.n].value:"")+"</td><td>"+esc(row.value[r.t]?row.value[r.t].value:"")+"</td></tr>";});
-h+="</tbody></table>";}else{h+="<div class=\"no-data\">受講生が登録されていません</div>";}
+h+="</tbody></table>";}else{h+="<div class=\"no-data\">åè¬çãç»é²ããã¦ãã¾ãã</div>";}
 h+="</div>";
 });
 document.getElementById("students-content").innerHTML=h;
