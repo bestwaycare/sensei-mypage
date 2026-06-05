@@ -32,14 +32,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans, Meiryo, sa
 .tab-content.active { display: block; }
 .section-card { background: white; border-radius: 10px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
 .section-card h3 { font-size: 15px; color: #2e7d32; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e8f5e9; }
-.info-row { display: flex; padding: 7px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; line-height: 1.5; }
+.info-row { display: block; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; line-height: 1.6; }
 .info-row:last-child { border-bottom: none; }
-.info-label { width: 90px; color: #888; flex-shrink: 0; font-size: 12px; padding-top: 1px; }
+.info-label { display: block; color: #888; font-size: 11px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .03em; }
+.student-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .round-section { background: white; border-radius: 10px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
 .round-header { display: flex; align-items: center; margin-bottom: 12px; }
 .round-header h3 { font-size: 15px; color: #2e7d32; }
 .badge { background: #e8f5e9; color: #2e7d32; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px; margin-left: 8px; }
-.student-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.student-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 280px; }
 .student-table th { background: #e8f5e9; padding: 8px 6px; text-align: left; color: #1b5e20; font-weight: bold; font-size: 12px; }
 .student-table td { padding: 9px 6px; border-bottom: 1px solid #f0f0f0; }
 .no-data { text-align: center; color: #bbb; padding: 20px; font-size: 13px; }
@@ -127,9 +128,9 @@ var h="";
 rounds.forEach(function(r){
 var rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];
 h+="<div class=\"round-section\"><div class=\"round-header\"><h3>"+r.l+"</h3><span class=\"badge\">"+rows.length+" å</span></div>";
-if(rows.length>0){h+="<table class=\"student-table\"><thead><tr><th>ç³è¾¼æ¥</th><th>æ°å</th><th>é»è©±çªå·</th></tr></thead><tbody>";
+if(rows.length>0){h+="<div class=\"student-table-wrap\"><table class=\"student-table\"><thead><tr><th>ç³è¾¼æ¥</th><th>æ°å</th><th>é»è©±çªå·</th></tr></thead><tbody>";
 rows.forEach(function(row){h+="<tr><td>"+esc(row.value[r.d]?row.value[r.d].value:"")+"</td><td>"+esc(row.value[r.n]?row.value[r.n].value:"")+"</td><td>"+esc(row.value[r.t]?row.value[r.t].value:"")+"</td></tr>";});
-h+="</tbody></table>";}else{h+="<div class=\"no-data\">åè¬çãç»é²ããã¦ãã¾ãã</div>";}
+h+="</tbody></table></div>";}else{h+="<div class=\"no-data\">åè¬çãç»é²ããã¦ãã¾ãã</div>";}
 h+="</div>";
 });
 document.getElementById("students-content").innerHTML=h;
