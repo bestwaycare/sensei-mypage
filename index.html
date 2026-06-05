@@ -72,9 +72,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans, Meiryo, sa
 <div id="tab-students" class="tab-content"><div id="students-content"></div></div>
 </div>
 <script>
-var DOMAIN="azoch3bdyyq2.cybozu.com",APP=267,TOKEN="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
+var PROXY="https://corsproxy.io/?url=",DOMAIN="azoch3bdyyq2.cybozu.com",APP=267,TOKEN="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
 var rec=null;
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function apiUrl(path,query){return PROXY+encodeURIComponent("https://"+DOMAIN+path+(query?"?"+query:""));}
 function doLogin(){
 var name=document.getElementById("input-name").value.trim();
 var dob=document.getElementById("input-dob").value;
@@ -83,13 +84,14 @@ err.style.display="none";
 if(!name||!dob){err.textContent="お名前と生年月日を入力してください";err.style.display="block";return;}
 var btn=document.getElementById("login-btn");
 btn.textContent="確認中...";btn.disabled=true;
-var name1=name.replace(/ /g,"　").replace(/	/g,"　");
+var name1=name.replace(/ /g,"　");
 var name2=name.replace(/　/g," ");
 function tryQ(n,cb){
-var q=encodeURIComponent("文字列__1行_ = ""+n+"" and 生年月日 = ""+dob+""");
-fetch("https://"+DOMAIN+"/k/v1/records.json?app="+APP+"&query="+q,{headers:{"X-Cybozu-API-Token":TOKEN}})
+var q="app="+APP+"&query="+encodeURIComponent("文字列__1行_ = \""+n+"\" and 生年月日 = \""+dob+"\"");
+fetch(apiUrl("/k/v1/records.json",q),{headers:{"X-Cybozu-API-Token":TOKEN}})
 .then(function(r){return r.json();})
-.then(function(d){cb(d.records&&d.records.length>0?d.records[0]:null);});
+.then(function(d){cb(d.records&&d.records.length>0?d.records[0]:null);})
+.catch(function(){cb(null);});
 }
 tryQ(name1,function(r){
 if(r){rec=r;showMain();btn.textContent="ログイン";btn.disabled=false;}
@@ -105,19 +107,14 @@ function showMain(){document.getElementById("login-screen").style.display="none"
 function switchTab(t,btn){document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});document.querySelectorAll(".tab-content").forEach(function(c){c.classList.remove("active");});btn.classList.add("active");document.getElementById("tab-"+t).classList.add("active");}
 function get(c){return rec[c]&&rec[c].value?rec[c].value:"";}
 function renderVenue(){
-var days=[
-{l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",m:"１日目最低開講人数",n:"１日目会場注意事項"},
-{l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",m:"２日目最低開講人数",n:"２日目会場注意事項"},
-{l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",m:"_3日目最低開講人数",n:"_3日目会場注意事項"},
-{l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",m:"_4日目最低開講人数",n:"_4日目会場注意事項"}
-];
+var days=[{l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",m:"１日目最低開講人数",n:"１日目会場注意事項"},{l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",m:"２日目最低開講人数",n:"２日目会場注意事項"},{l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",m:"_3日目最低開講人数",n:"_3日目会場注意事項"},{l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",m:"_4日目最低開講人数",n:"_4日目会場注意事項"}];
 var h="<div class=\"section-card\"><h3>📌 基本情報</h3><div class=\"info-row\"><span class=\"info-label\">教室名</span><span>"+esc(get("教室名"))+"</span></div><div class=\"info-row\"><span class=\"info-label\">対応地域</span><span>"+esc(get("文字列__1行__0"))+"</span></div></div>";
 var any=false;
 days.forEach(function(d){var v=get(d.v);if(!v)return;any=true;
 h+="<div class=\"section-card\"><h3>📍 "+d.l+"</h3><div class=\"info-row\"><span class=\"info-label\">会場名</span><span>"+esc(v)+"</span></div><div class=\"info-row\"><span class=\"info-label\">住所</span><span>"+esc(get(d.a))+"</span></div>";
 if(get(d.c))h+="<div class=\"info-row\"><span class=\"info-label\">定員</span><span>"+esc(get(d.c))+" 名</span></div>";
 if(get(d.m))h+="<div class=\"info-row\"><span class=\"info-label\">最低開講数</span><span>"+esc(get(d.m))+" 名</span></div>";
-if(get(d.n))h+="<div class=\"info-row\"><span class=\"info-label\">注意事項</span><span>"+esc(get(d.n)).replace(/\n/g,"<br>")+"</span></div>";
+if(get(d.n))h+="<div class=\"info-row\"><span class=\"info-label\">注意事項</span><span>"+esc(get(d.n)).split("\n").join("<br>")+"</span></div>";
 h+="</div>";
 });
 if(!any)h+="<div class=\"section-card\"><div class=\"no-data\">会場情報がまだ登録されていません</div></div>";
@@ -125,12 +122,7 @@ document.getElementById("venue-loading").style.display="none";
 var el=document.getElementById("venue-content");el.innerHTML=h;el.style.display="block";
 }
 function renderStudents(){
-var rounds=[
-{l:"第1回",c:"第1回受講生",d:"第1回申込日",n:"第1回受講生氏名",t:"第1回携帯電話番号"},
-{l:"第2回",c:"第2回受講生",d:"第2回申込日",n:"第2回受講生氏名",t:"第2回携帯電話番号"},
-{l:"第3回",c:"第3回受講生",d:"第3回申込日",n:"第3回受講生氏名",t:"第3回携帯電話番号"},
-{l:"第4回",c:"第4回受講生",d:"第4回申込日",n:"第4回受講生氏名",t:"第4回携帯電話番号"}
-];
+var rounds=[{l:"第1回",c:"第1回受講生",d:"第1回申込日",n:"第1回受講生氏名",t:"第1回携帯電話番号"},{l:"第2回",c:"第2回受講生",d:"第2回申込日",n:"第2回受講生氏名",t:"第2回携帯電話番号"},{l:"第3回",c:"第3回受講生",d:"第3回申込日",n:"第3回受講生氏名",t:"第3回携帯電話番号"},{l:"第4回",c:"第4回受講生",d:"第4回申込日",n:"第4回受講生氏名",t:"第4回携帯電話番号"}];
 var h="";
 rounds.forEach(function(r){
 var rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];
