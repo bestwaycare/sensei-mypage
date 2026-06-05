@@ -6,7 +6,7 @@
 <title>先生マイページ - ベストウェイ模擬試験</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
+body { font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans, Meiryo, sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
 .header { background: #2e7d32; color: white; padding: 16px; text-align: center; }
 .header h1 { font-size: 18px; }
 .header p { font-size: 12px; margin-top: 4px; opacity: .8; }
@@ -20,7 +20,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo'
 .btn-login { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 4px; }
 .btn-login:hover { background: #1b5e20; }
 .btn-login:disabled { background: #aaa; cursor: not-allowed; }
-.error-msg { color: #c62828; font-size: 13px; text-align: center; margin-top: 14px; padding: 10px; background: #ffebee; border-radius: 6px; white-space: pre-line; }
+.error-msg { color: #c62828; font-size: 13px; text-align: center; margin-top: 14px; padding: 10px; background: #ffebee; border-radius: 6px; }
 #main-screen { display: none; }
 .user-bar { background: #1b5e20; color: white; padding: 10px 16px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
 .user-bar span { font-weight: bold; font-size: 15px; }
@@ -72,48 +72,77 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo'
 <div id="tab-students" class="tab-content"><div id="students-content"></div></div>
 </div>
 <script>
-const DOMAIN='azoch3bdyyq2.cybozu.com',APP=267,TOKEN='SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B';
-let rec=null;
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-async function doLogin(){
-const name=document.getElementById('input-name').value.trim();
-const dob=document.getElementById('input-dob').value;
-const err=document.getElementById('login-error');
-err.style.display='none';
-if(!name||!dob){err.textContent='お名前と生年月日を入力してください';err.style.display='block';return;}
-const btn=document.getElementById('login-btn');
-btn.textContent='確認中...';btn.disabled=true;
-try{
-const tryQ=async(n)=>{
-const q=encodeURIComponent('文字列__1行_ = "'+n+'" and 生年月日 = "'+dob+'"&limit=1');
-const r=await fetch('https://'+DOMAIN+'/k/v1/records.json?app='+APP+'&query='+q,{headers:{'X-Cybozu-API-Token':TOKEN}});
-const d=await r.json();
-return d.records&&d.records.length>0?d.records[0]:null;
-};
-rec=await tryQ(name.replace(/\s+/g,'　'))||await tryQ(name.replace(/　/g,' '));
-if(rec){showMain();}else{err.textContent='お名前または生年月日が一致しませんでした。\n登録内容をご確認ください。';err.style.display='block';}
-}catch(e){err.textContent='通信エラーが発生しました。\nしばらく後に再試行してください。';err.style.display='block';}
-btn.textContent='ログイン';btn.disabled=false;
+var DOMAIN="azoch3bdyyq2.cybozu.com",APP=267,TOKEN="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
+var rec=null;
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function doLogin(){
+var name=document.getElementById("input-name").value.trim();
+var dob=document.getElementById("input-dob").value;
+var err=document.getElementById("login-error");
+err.style.display="none";
+if(!name||!dob){err.textContent="お名前と生年月日を入力してください";err.style.display="block";return;}
+var btn=document.getElementById("login-btn");
+btn.textContent="確認中...";btn.disabled=true;
+var name1=name.replace(/ /g,"　").replace(/	/g,"　");
+var name2=name.replace(/　/g," ");
+function tryQ(n,cb){
+var q=encodeURIComponent("文字列__1行_ = ""+n+"" and 生年月日 = ""+dob+""");
+fetch("https://"+DOMAIN+"/k/v1/records.json?app="+APP+"&query="+q,{headers:{"X-Cybozu-API-Token":TOKEN}})
+.then(function(r){return r.json();})
+.then(function(d){cb(d.records&&d.records.length>0?d.records[0]:null);});
 }
-function doLogout(){rec=null;document.getElementById('main-screen').style.display='none';document.getElementById('login-screen').style.display='block';document.getElementById('input-name').value='';document.getElementById('input-dob').value='';document.getElementById('login-error').style.display='none';switchTab('venue',document.getElementById('tab-btn-venue'));}
-function showMain(){document.getElementById('login-screen').style.display='none';document.getElementById('main-screen').style.display='block';document.getElementById('user-name-display').textContent=rec['文字列__1行_'].value;renderVenue();renderStudents();}
-function switchTab(t,btn){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-'+t).classList.add('active');}
-function get(c){return rec[c]&&rec[c].value?rec[c].value:'';}
+tryQ(name1,function(r){
+if(r){rec=r;showMain();btn.textContent="ログイン";btn.disabled=false;}
+else{tryQ(name2,function(r2){
+if(r2){rec=r2;showMain();}
+else{err.textContent="お名前または生年月日が一致しませんでした。登録内容をご確認ください。";err.style.display="block";}
+btn.textContent="ログイン";btn.disabled=false;
+});}
+});
+}
+function doLogout(){rec=null;document.getElementById("main-screen").style.display="none";document.getElementById("login-screen").style.display="block";document.getElementById("input-name").value="";document.getElementById("input-dob").value="";document.getElementById("login-error").style.display="none";switchTab("venue",document.getElementById("tab-btn-venue"));}
+function showMain(){document.getElementById("login-screen").style.display="none";document.getElementById("main-screen").style.display="block";document.getElementById("user-name-display").textContent=rec["文字列__1行_"].value;renderVenue();renderStudents();}
+function switchTab(t,btn){document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});document.querySelectorAll(".tab-content").forEach(function(c){c.classList.remove("active");});btn.classList.add("active");document.getElementById("tab-"+t).classList.add("active");}
+function get(c){return rec[c]&&rec[c].value?rec[c].value:"";}
 function renderVenue(){
-const days=[{l:'第1回',v:'１日目会場',a:'１日目会場住所',c:'１日目定員',m:'１日目最低開講人数',n:'１日目会場注意事項'},{l:'第2回',v:'２日目会場',a:'２日目会場住所',c:'２日目定員',m:'２日目最低開講人数',n:'２日目会場注意事項'},{l:'第3回',v:'_3日目会場',a:'_3日目会場住所',c:'_3日目定員',m:'_3日目最低開講人数',n:'_3日目会場注意事項'},{l:'第4回',v:'_4日目会場_0',a:'_4日目会場住所',c:'_4日目定員',m:'_4日目最低開講人数',n:'_4日目会場注意事項'}];
-let h='<div class="section-card"><h3>📌 基本情報</h3><div class="info-row"><span class="info-label">教室名</span><span>'+esc(get('教室名'))+'</span></div><div class="info-row"><span class="info-label">対応地域</span><span>'+esc(get('文字列__1行__0'))+'</span></div></div>';
-let any=false;
-days.forEach(d=>{const v=get(d.v);if(!v)return;any=true;h+='<div class="section-card"><h3>📍 '+d.l+'</h3><div class="info-row"><span class="info-label">会場名</span><span>'+esc(v)+'</span></div><div class="info-row"><span class="info-label">住所</span><span>'+esc(get(d.a))+'</span></div>';if(get(d.c))h+='<div class="info-row"><span class="info-label">定員</span><span>'+esc(get(d.c))+' 名</span></div>';if(get(d.m))h+='<div class="info-row"><span class="info-label">最低開講数</span><span>'+esc(get(d.m))+' 名</span></div>';if(get(d.n))h+='<div class="info-row"><span class="info-label">注意事項</span><span>'+esc(get(d.n)).replace(/\n/g,'<br>')+'</span></div>';h+='</div>';});
-if(!any)h+='<div class="section-card"><div class="no-data">会場情報がまだ登録されていません</div></div>';
-document.getElementById('venue-loading').style.display='none';const el=document.getElementById('venue-content');el.innerHTML=h;el.style.display='block';
+var days=[
+{l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",m:"１日目最低開講人数",n:"１日目会場注意事項"},
+{l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",m:"２日目最低開講人数",n:"２日目会場注意事項"},
+{l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",m:"_3日目最低開講人数",n:"_3日目会場注意事項"},
+{l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",m:"_4日目最低開講人数",n:"_4日目会場注意事項"}
+];
+var h="<div class=\"section-card\"><h3>📌 基本情報</h3><div class=\"info-row\"><span class=\"info-label\">教室名</span><span>"+esc(get("教室名"))+"</span></div><div class=\"info-row\"><span class=\"info-label\">対応地域</span><span>"+esc(get("文字列__1行__0"))+"</span></div></div>";
+var any=false;
+days.forEach(function(d){var v=get(d.v);if(!v)return;any=true;
+h+="<div class=\"section-card\"><h3>📍 "+d.l+"</h3><div class=\"info-row\"><span class=\"info-label\">会場名</span><span>"+esc(v)+"</span></div><div class=\"info-row\"><span class=\"info-label\">住所</span><span>"+esc(get(d.a))+"</span></div>";
+if(get(d.c))h+="<div class=\"info-row\"><span class=\"info-label\">定員</span><span>"+esc(get(d.c))+" 名</span></div>";
+if(get(d.m))h+="<div class=\"info-row\"><span class=\"info-label\">最低開講数</span><span>"+esc(get(d.m))+" 名</span></div>";
+if(get(d.n))h+="<div class=\"info-row\"><span class=\"info-label\">注意事項</span><span>"+esc(get(d.n)).replace(/\n/g,"<br>")+"</span></div>";
+h+="</div>";
+});
+if(!any)h+="<div class=\"section-card\"><div class=\"no-data\">会場情報がまだ登録されていません</div></div>";
+document.getElementById("venue-loading").style.display="none";
+var el=document.getElementById("venue-content");el.innerHTML=h;el.style.display="block";
 }
 function renderStudents(){
-const rounds=[{l:'第1回',c:'第1回受講生',d:'第1回申込日',n:'第1回受講生氏名',t:'第1回携帯電話番号'},{l:'第2回',c:'第2回受講生',d:'第2回申込日',n:'第2回受講生氏名',t:'第2回携帯電話番号'},{l:'第3回',c:'第3回受講生',d:'第3回申込日',n:'第3回受講生氏名',t:'第3回携帯電話番号'},{l:'第4回',c:'第4回受講生',d:'第4回申込日',n:'第4回受講生氏名',t:'第4回携帯電話番号'}];
-let h='';
-rounds.forEach(r=>{const rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];h+='<div class="round-section"><div class="round-header"><h3>'+r.l+'</h3><span class="badge">'+rows.length+' 名</span></div>';if(rows.length>0){h+='<table class="student-table"><thead><tr><th>申込日</th><th>氏名</th><th>電話番号</th></tr></thead><tbody>';rows.forEach(row=>{h+='<tr><td>'+esc(row.value[r.d]?.value||'')+'</td><td>'+esc(row.value[r.n]?.value||'')+'</td><td>'+esc(row.value[r.t]?.value||'')+'</td></tr>';});h+='</tbody></table>';}else{h+='<div class="no-data">受講生が登録されていません</div>';}h+='</div>';});
-document.getElementById('students-content').innerHTML=h;
+var rounds=[
+{l:"第1回",c:"第1回受講生",d:"第1回申込日",n:"第1回受講生氏名",t:"第1回携帯電話番号"},
+{l:"第2回",c:"第2回受講生",d:"第2回申込日",n:"第2回受講生氏名",t:"第2回携帯電話番号"},
+{l:"第3回",c:"第3回受講生",d:"第3回申込日",n:"第3回受講生氏名",t:"第3回携帯電話番号"},
+{l:"第4回",c:"第4回受講生",d:"第4回申込日",n:"第4回受講生氏名",t:"第4回携帯電話番号"}
+];
+var h="";
+rounds.forEach(function(r){
+var rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];
+h+="<div class=\"round-section\"><div class=\"round-header\"><h3>"+r.l+"</h3><span class=\"badge\">"+rows.length+" 名</span></div>";
+if(rows.length>0){h+="<table class=\"student-table\"><thead><tr><th>申込日</th><th>氏名</th><th>電話番号</th></tr></thead><tbody>";
+rows.forEach(function(row){h+="<tr><td>"+esc(row.value[r.d]?row.value[r.d].value:"")+"</td><td>"+esc(row.value[r.n]?row.value[r.n].value:"")+"</td><td>"+esc(row.value[r.t]?row.value[r.t].value:"")+"</td></tr>";});
+h+="</tbody></table>";}else{h+="<div class=\"no-data\">受講生が登録されていません</div>";}
+h+="</div>";
+});
+document.getElementById("students-content").innerHTML=h;
 }
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&document.getElementById("login-screen").style.display!=="none")doLogin();});
 </script>
 </body>
 </html>
