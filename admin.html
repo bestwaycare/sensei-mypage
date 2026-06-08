@@ -105,6 +105,7 @@ function loadAll(){
   fetch(qu("$id > 0 limit 100"),{headers:{"X-Cybozu-API-Token":TK}})
   .then(function(r){return r.json();})
   .then(function(d){
+    if(d.code){document.getElementById("loading").innerHTML="<p style='color:#c62828'>Kintoneエラー: "+d.code+"</p><pre>"+JSON.stringify(d)+"</pre>";return;}
     allRecs=d.records||[];
     document.getElementById("loading").style.display="none";
     document.getElementById("main").style.display="block";
@@ -113,8 +114,8 @@ function loadAll(){
     document.getElementById("totalCount").textContent=allRecs.length+"件";
     renderTable(allRecs);
   })
-  .catch(function(){
-    document.getElementById("loading").innerHTML="<p style='color:#c62828'>データの取得に失敗しました。ページを再読み込みしてください。</p>";
+  .catch(function(e){
+    document.getElementById("loading").innerHTML="<p style='color:#c62828'>取得失敗: "+String(e)+"</p><p>ページを再読み込みしてください</p>";
   });
 }
 
