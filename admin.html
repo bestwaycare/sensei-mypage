@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理者ページ - ベストウェイ模擬試験</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:#f0f4f8;color:#333}
+.hd{background:#1565c0;color:#fff;padding:16px;text-align:center}
+.hd h1{font-size:18px}.hd p{font-size:12px;margin-top:4px;opacity:.8}
+.bar{background:#0d47a1;color:#fff;padding:10px 16px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.bar span{opacity:.8}
+.wrap{max-width:900px;margin:0 auto;padding:14px}
+.ld{text-align:center;padding:60px 20px;color:#888}
+.sp{width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.summary{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.scard{background:#fff;border-radius:10px;padding:14px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);flex:1;min-width:140px;text-align:center}
+.scard .num{font-size:28px;font-weight:bold;color:#1565c0}
+.scard .lbl{font-size:12px;color:#888;margin-top:4px}
+.scard.ok .num{color:#2e7d32}
+.scard.ng .num{color:#c62828}
+.filter{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.filter input{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;flex:1;min-width:180px}
+.filter select{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13px}
+thead tr{background:#e3f2fd}
+th{padding:10px 12px;text-align:left;color:#1565c0;font-size:12px;font-weight:bold}
+td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f9fbff}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+.tag.ok{background:#e8f5e9;color:#2e7d32}
+.tag.ng{background:#ffebee;color:#c62828}
+.tag.v1{background:#e3f2fd;color:#1565c0}
+.tag.v2{background:#f3e5f5;color:#6a1b9a}
+.tag.v3{background:#fff3e0;color:#e65100}
+.tag.v4{background:#e0f2f1;color:#00695c}
+details{cursor:pointer}
+details summary{list-style:none;outline:none}
+details summary::-webkit-details-marker{display:none}
+.dtl{background:#f9fbff;border:1px solid #e3f2fd;border-radius:8px;padding:12px;margin-top:8px;font-size:12px}
+.dtl-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.dtl-row:last-child{margin-bottom:0}
+.dtl-lbl{color:#888;min-width:60px;font-size:11px;padding-top:2px}
+.dtl-val{flex:1;word-break:break-all;line-height:1.5}
+.sub-tbl{width:100%;border-collapse:collapse;margin-top:6px}
+.sub-tbl th{background:#e8f5e9;padding:4px 6px;font-size:11px;color:#2e7d32}
+.sub-tbl td{padding:4px 6px;border-bottom:1px solid #f0f0f0;font-size:11px}
+.expand-btn{background:none;border:none;color:#1565c0;font-size:12px;cursor:pointer;padding:0;text-decoration:underline}
+.no-data{color:#bbb;font-size:12px}
+</style>
+</head>
+<body>
+<div class="hd">
+  <h1>&#x7ba1;&#x7406;&#x8005;&#x30da;&#x30fc;&#x30b8; &#x30d9;&#x30b9;&#x30c8;&#x30a6;&#x30a7;&#x30a4;&#x6a21;&#x64ec;&#x8a66;&#x9a13;</h1>
+  <p>&#x5168;&#x5148;&#x751f;&#x4e00;&#x89a7;</p>
+</div>
+<div class="bar">
+  <span id="lastUpdate">&#x8aad;&#x307f;&#x8fbc;&#x307f;&#x4e2d;...</span>
+  <span id="totalCount"></span>
+</div>
+<div class="wrap">
+  <div id="loading" class="ld"><div class="sp"></div>&#x30c7;&#x30fc;&#x30bf;&#x3092;&#x53d6;&#x5f97;&#x4e2d;...</div>
+  <div id="main" style="display:none">
+    <div class="summary">
+      <div class="scard"><div class="num" id="s-total">0</div><div class="lbl">&#x5168;&#x5148;&#x751f;</div></div>
+      <div class="scard ok"><div class="num" id="s-ok">0</div><div class="lbl">&#x751f;&#x5e74;&#x6708;&#x65e5;&#x767b;&#x9332;&#x6e08;</div></div>
+      <div class="scard ng"><div class="num" id="s-ng">0</div><div class="lbl">&#x672a;&#x767b;&#x9332;</div></div>
+    </div>
+    <div class="filter">
+      <input type="text" id="searchBox" placeholder="&#x540d;&#x524d;&#x30fb;&#x6559;&#x5ba4;&#x540d;&#x3067;&#x6319;&#x7d1e;" oninput="filterTable()">
+      <select id="filterDob" onchange="filterTable()">
+        <option value="">&#x751f;&#x5e74;&#x6708;&#x65e5; &#x3059;&#x3079;&#x3066;</option>
+        <option value="ok">&#x767b;&#x9332;&#x6e08;&#x307f;</option>
+        <option value="ng">&#x672a;&#x767b;&#x9332;</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>&#x6559;&#x5ba4;&#x540d;</th>
+            <th>&#x5148;&#x751f;&#x540d;</th>
+            <th>&#x751f;&#x5e74;&#x6708;&#x65e5;</th>
+            <th>&#x4f1a;&#x5834;</th>
+            <th>&#x53d7;&#x8b1b;&#x751f;</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+var P="https://corsproxy.io/?url=",D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
+var allRecs=[];
+function qu(q){return P+encodeURIComponent("https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q));}
+function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
+
+function loadAll(){
+  fetch(qu("limit 100 order by レコード番号 asc"),{headers:{"X-Cybozu-API-Token":TK}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    allRecs=d.records||[];
+    document.getElementById("loading").style.display="none";
+    document.getElementById("main").style.display="block";
+    var now=new Date();
+    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+" 取得";
+    document.getElementById("totalCount").textContent=allRecs.length+"件";
+    renderTable(allRecs);
+  })
+  .catch(function(){
+    document.getElementById("loading").innerHTML="<p style='color:#c62828'>データの取得に失敗しました。ページを再読み込みしてください。</p>";
+  });
+}
+
+function renderTable(recs){
+  var ok=0,ng=0;
+  var html="";
+  recs.forEach(function(r){
+    var name=get(r,"文字列__1行_");
+    var dob=get(r,"生年月日");
+    var kyoshitsu=get(r,"教室名");
+    if(dob)ok++;else ng++;
+
+    // 会場タグ
+    var venues=[];
+    var vf=["１日目会場","2日目会場","_3日目会場","_4日目会場_0"];
+    var vcls=["v1","v2","v3","v4"];
+    var vlbl=["第1回","第2回","第3回","第4回"];
+    for(var i=0;i<4;i++){if(get(r,vf[i]))venues.push('<span class="tag '+vcls[i]+'">'+vlbl[i]+'</span>');}
+
+    // 受講生数
+    var stCounts=[];
+    var sf=["第1回受講生","第2回受講生","第3回受講生","第4回受講生"];
+    var total=0;
+    for(var j=0;j<4;j++){
+      var rows=r[sf[j]]&&r[sf[j]].value?r[sf[j]].value:[];
+      var cnt=rows.filter(function(x){return x.value&&(x.value[Object.keys(x.value)[1]]||{value:""}).value;}).length;
+      if(cnt>0)stCounts.push(vlbl[j]+":"+cnt+"名");
+      total+=cnt;
+    }
+
+    // 詳細HTML
+    var detailHtml=buildDetail(r);
+
+    html+="<tr>";
+    html+="<td>"+esc(kyoshitsu)+"</td>";
+    html+="<td><details><summary class='expand-btn'>"+esc(name)+"</summary><div class='dtl'>"+detailHtml+"</div></details></td>";
+    html+="<td>"+(dob?'<span class="tag ok">'+esc(dob)+'</span>':'<span class="tag ng">未登録</span>')+"</td>";
+    html+="<td>"+(venues.length?venues.join(" "):'<span class="no-data">-</span>')+"</td>";
+    html+="<td>"+(total>0?'<span class="tag ok">'+total+'名</span>':'<span class="no-data">-</span>')+"</td>";
+    html+="</tr>";
+  });
+  document.getElementById("tbody").innerHTML=html;
+  document.getElementById("s-total").textContent=recs.length;
+  document.getElementById("s-ok").textContent=ok;
+  document.getElementById("s-ng").textContent=ng;
+}
+
+function buildDetail(r){
+  var html="";
+  var days=[
+    {l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",n:"１日目会場注意事項",s:"第1回受講生",dn:"第1回申込日",nn:"第1回受講生氏名",tn:"第1回携帯電話番号"},
+    {l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",n:"２日目会場注意事項",s:"第2回受講生",dn:"第2回申込日",nn:"第2回受講生氏名",tn:"第2回携帯電話番号"},
+    {l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",n:"_3日目会場注意事項",s:"第3回受講生",dn:"第3回申込日",nn:"第3回受講生氏名",tn:"第3回携帯電話番号"},
+    {l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",n:"_4日目会場注意事項",s:"第4回受講生",dn:"第4回申込日",nn:"第4回受講生氏名",tn:"第4回携帯電話番号"}
+  ];
+  days.forEach(function(d){
+    var venue=get(r,d.v);
+    if(!venue)return;
+    html+="<div style='margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e3f2fd'>";
+    html+="<div style='font-weight:bold;color:#1565c0;margin-bottom:6px'>"+esc(d.l)+" "+esc(venue)+"</div>";
+    if(get(r,d.a))html+="<div class='dtl-row'><span class='dtl-lbl'>住所</span><span class='dtl-val'>"+esc(get(r,d.a))+"</span></div>";
+    if(get(r,d.c))html+="<div class='dtl-row'><span class='dtl-lbl'>定員</span><span class='dtl-val'>"+esc(get(r,d.c))+"名</span></div>";
+    var rows=r[d.s]&&r[d.s].value?r[d.s].value:[];
+    var valid=rows.filter(function(x){return x.value&&x.value[d.nn]&&x.value[d.nn].value;});
+    if(valid.length>0){
+      html+="<div style='margin-top:6px'><table class='sub-tbl'><thead><tr><th>申込日</th><th>氏名</th><th>電話</th></tr></thead><tbody>";
+      valid.forEach(function(x){
+        html+="<tr><td>"+esc(x.value[d.dn]?x.value[d.dn].value:"")+"</td><td>"+esc(x.value[d.nn]?x.value[d.nn].value:"")+"</td><td>"+esc(x.value[d.tn]?x.value[d.tn].value:"")+"</td></tr>";
+      });
+      html+="</tbody></table></div>";
+    }
+    html+="</div>";
+  });
+  return html||"<span class='no-data'>会場未登録</span>";
+}
+
+function filterTable(){
+  var q=document.getElementById("searchBox").value.toLowerCase();
+  var dob=document.getElementById("filterDob").value;
+  var filtered=allRecs.filter(function(r){
+    var name=(get(r,"文字列__1行_")||"").toLowerCase();
+    var kyoshitsu=(get(r,"教室名")||"").toLowerCase();
+    var dobVal=get(r,"生年月日");
+    if(q&&name.indexOf(q)<0&&kyoshitsu.indexOf(q)<0)return false;
+    if(dob==="ok"&&!dobVal)return false;
+    if(dob==="ng"&&dobVal)return false;
+    return true;
+  });
+  renderTable(filtered);
+}
+loadAll();
+</script>
+</body>
+</html>
