@@ -6,51 +6,39 @@
 <title>管理者ページ - ベストウェイ模擬試験</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,sans-serif;background:#f0f4f8;color:#333}
-.hd{background:#1565c0;color:#fff;padding:16px;text-align:center}
-.hd h1{font-size:18px}.hd p{font-size:12px;margin-top:4px;opacity:.8}
-.bar{background:#0d47a1;color:#fff;padding:10px 16px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
-.bar span{opacity:.8}
-.wrap{max-width:900px;margin:0 auto;padding:14px}
+body{font-family:-apple-system,sans-serif;background:#f0f4f8;color:#333;font-size:13px}
+.hd{background:#1565c0;color:#fff;padding:14px 16px;text-align:center}
+.hd h1{font-size:17px}.hd p{font-size:11px;margin-top:3px;opacity:.8}
+.bar{background:#0d47a1;color:#fff;padding:8px 14px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.wrap{padding:12px}
 .ld{text-align:center;padding:60px 20px;color:#888}
-.sp{width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+.sp{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.summary{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.scard{background:#fff;border-radius:10px;padding:14px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);flex:1;min-width:140px;text-align:center}
-.scard .num{font-size:28px;font-weight:bold;color:#1565c0}
-.scard .lbl{font-size:12px;color:#888;margin-top:4px}
-.scard.ok .num{color:#2e7d32}
-.scard.ng .num{color:#c62828}
-.filter{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.filter input{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;flex:1;min-width:180px}
-.filter select{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff}
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13px}
+.summary{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sc{background:#fff;border-radius:8px;padding:10px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);flex:1;min-width:120px;text-align:center}
+.sc .num{font-size:24px;font-weight:bold;color:#1565c0}
+.sc.ok .num{color:#2e7d32}.sc.ng .num{color:#c62828}
+.sc .lbl{font-size:11px;color:#888;margin-top:2px}
+.filter{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.filter input,.filter select{padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff}
+.filter input{flex:1;min-width:160px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 thead tr{background:#e3f2fd}
-th{padding:10px 12px;text-align:left;color:#1565c0;font-size:12px;font-weight:bold}
-td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+th{padding:9px 10px;text-align:left;color:#1565c0;font-size:11px;font-weight:bold;border-right:1px solid #e0e0e0;white-space:nowrap}
+th:last-child{border-right:none}
+td{padding:8px 10px;border-bottom:1px solid #f0f0f0;border-right:1px solid #f5f5f5;vertical-align:top}
+td:last-child{border-right:none}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:#f9fbff}
-.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+tr:hover td{background:#f0f7ff}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:bold}
 .tag.ok{background:#e8f5e9;color:#2e7d32}
 .tag.ng{background:#ffebee;color:#c62828}
-.tag.v1{background:#e3f2fd;color:#1565c0}
-.tag.v2{background:#f3e5f5;color:#6a1b9a}
-.tag.v3{background:#fff3e0;color:#e65100}
-.tag.v4{background:#e0f2f1;color:#00695c}
-details{cursor:pointer}
-details summary{list-style:none;outline:none}
-details summary::-webkit-details-marker{display:none}
-.dtl{background:#f9fbff;border:1px solid #e3f2fd;border-radius:8px;padding:12px;margin-top:8px;font-size:12px}
-.dtl-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
-.dtl-row:last-child{margin-bottom:0}
-.dtl-lbl{color:#888;min-width:60px;font-size:11px;padding-top:2px}
-.dtl-val{flex:1;word-break:break-all;line-height:1.5}
-.sub-tbl{width:100%;border-collapse:collapse;margin-top:6px}
-.sub-tbl th{background:#e8f5e9;padding:4px 6px;font-size:11px;color:#2e7d32}
-.sub-tbl td{padding:4px 6px;border-bottom:1px solid #f0f0f0;font-size:11px}
-.expand-btn{background:none;border:none;color:#1565c0;font-size:12px;cursor:pointer;padding:0;text-decoration:underline}
-.no-data{color:#bbb;font-size:12px}
+.round-cell{min-width:150px}
+.r-count{font-size:11px;color:#888;margin-bottom:4px}
+.r-name{display:block;padding:2px 0;border-bottom:1px solid #f5f5f5;white-space:nowrap}
+.r-name:last-child{border-bottom:none}
+.r-empty{color:#ccc;font-size:11px}
 </style>
 </head>
 <body>
@@ -66,9 +54,9 @@ details summary::-webkit-details-marker{display:none}
   <div id="loading" class="ld"><div class="sp"></div>&#x30c7;&#x30fc;&#x30bf;&#x3092;&#x53d6;&#x5f97;&#x4e2d;...</div>
   <div id="main" style="display:none">
     <div class="summary">
-      <div class="scard"><div class="num" id="s-total">0</div><div class="lbl">&#x5168;&#x5148;&#x751f;</div></div>
-      <div class="scard ok"><div class="num" id="s-ok">0</div><div class="lbl">&#x751f;&#x5e74;&#x6708;&#x65e5;&#x767b;&#x9332;&#x6e08;</div></div>
-      <div class="scard ng"><div class="num" id="s-ng">0</div><div class="lbl">&#x672a;&#x767b;&#x9332;</div></div>
+      <div class="sc"><div class="num" id="s-total">0</div><div class="lbl">&#x5168;&#x5148;&#x751f;</div></div>
+      <div class="sc ok"><div class="num" id="s-ok">0</div><div class="lbl">&#x751f;&#x5e74;&#x6708;&#x65e5;&#x767b;&#x9332;&#x6e08;</div></div>
+      <div class="sc ng"><div class="num" id="s-ng">0</div><div class="lbl">&#x672a;&#x767b;&#x9332;</div></div>
     </div>
     <div class="filter">
       <input type="text" id="searchBox" placeholder="&#x540d;&#x524d;&#x30fb;&#x6559;&#x5ba4;&#x540d;&#x3067;&#x6319;&#x7d1e;" oninput="filterTable()">
@@ -85,8 +73,10 @@ details summary::-webkit-details-marker{display:none}
             <th>&#x6559;&#x5ba4;&#x540d;</th>
             <th>&#x5148;&#x751f;&#x540d;</th>
             <th>&#x751f;&#x5e74;&#x6708;&#x65e5;</th>
-            <th>&#x4f1a;&#x5834;</th>
-            <th>&#x53d7;&#x8b1b;&#x751f;</th>
+            <th class="round-cell">&#x7b2c;1&#x56de; &#x53d7;&#x8b1b;&#x751f;</th>
+            <th class="round-cell">&#x7b2c;2&#x56de; &#x53d7;&#x8b1b;&#x751f;</th>
+            <th class="round-cell">&#x7b2c;3&#x56de; &#x53d7;&#x8b1b;&#x751f;</th>
+            <th class="round-cell">&#x7b2c;4&#x56de; &#x53d7;&#x8b1b;&#x751f;</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -101,16 +91,31 @@ function qu(q){return P+encodeURIComponent("https://"+D+"/k/v1/records.json?app=
 function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
 
+function getStudents(r,subtable,nameField){
+  var rows=r[subtable]&&r[subtable].value?r[subtable].value:[];
+  return rows.filter(function(x){return x.value&&x.value[nameField]&&x.value[nameField].value;})
+             .map(function(x){return x.value[nameField].value;});
+}
+
+function renderStudentCell(names){
+  if(!names.length)return '<span class="r-empty">-</span>';
+  return '<div class="r-count">'+names.length+'&#x540d;</div>'+
+    names.map(function(n){return '<span class="r-name">'+esc(n)+'</span>';}).join('');
+}
+
 function loadAll(){
   fetch(qu("$id > 0 limit 100"),{headers:{"X-Cybozu-API-Token":TK}})
   .then(function(r){return r.json();})
   .then(function(d){
-    if(d.code){document.getElementById("loading").innerHTML="<p style='color:#c62828'>Kintoneエラー: "+d.code+"</p><pre>"+JSON.stringify(d)+"</pre>";return;}
+    if(d.code){
+      document.getElementById("loading").innerHTML="<p style='color:#c62828'>Kintoneエラー: "+esc(d.code)+" - "+esc(d.message)+"</p>";
+      return;
+    }
     allRecs=d.records||[];
     document.getElementById("loading").style.display="none";
     document.getElementById("main").style.display="block";
     var now=new Date();
-    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+" 取得";
+    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+"取得";
     document.getElementById("totalCount").textContent=allRecs.length+"件";
     renderTable(allRecs);
   })
@@ -121,75 +126,32 @@ function loadAll(){
 
 function renderTable(recs){
   var ok=0,ng=0;
+  var rounds=[
+    {s:"第1回受講生",n:"第1回受講生氏名"},
+    {s:"第2回受講生",n:"第2回受講生氏名"},
+    {s:"第3回受講生",n:"第3回受講生氏名"},
+    {s:"第4回受講生",n:"第4回受講生氏名"}
+  ];
   var html="";
   recs.forEach(function(r){
     var name=get(r,"文字列__1行_");
     var dob=get(r,"生年月日");
     var kyoshitsu=get(r,"教室名");
     if(dob)ok++;else ng++;
-
-    // 会場タグ
-    var venues=[];
-    var vf=["１日目会場","2日目会場","_3日目会場","_4日目会場_0"];
-    var vcls=["v1","v2","v3","v4"];
-    var vlbl=["第1回","第2回","第3回","第4回"];
-    for(var i=0;i<4;i++){if(get(r,vf[i]))venues.push('<span class="tag '+vcls[i]+'">'+vlbl[i]+'</span>');}
-
-    // 受講生数
-    var stCounts=[];
-    var sf=["第1回受講生","第2回受講生","第3回受講生","第4回受講生"];
-    var total=0;
-    for(var j=0;j<4;j++){
-      var rows=r[sf[j]]&&r[sf[j]].value?r[sf[j]].value:[];
-      var cnt=rows.filter(function(x){return x.value&&(x.value[Object.keys(x.value)[1]]||{value:""}).value;}).length;
-      if(cnt>0)stCounts.push(vlbl[j]+":"+cnt+"名");
-      total+=cnt;
-    }
-
-    // 詳細HTML
-    var detailHtml=buildDetail(r);
-
     html+="<tr>";
-    html+="<td>"+esc(kyoshitsu)+"</td>";
-    html+="<td><details><summary class='expand-btn'>"+esc(name)+"</summary><div class='dtl'>"+detailHtml+"</div></details></td>";
-    html+="<td>"+(dob?'<span class="tag ok">'+esc(dob)+'</span>':'<span class="tag ng">未登録</span>')+"</td>";
-    html+="<td>"+(venues.length?venues.join(" "):'<span class="no-data">-</span>')+"</td>";
-    html+="<td>"+(total>0?'<span class="tag ok">'+total+'名</span>':'<span class="no-data">-</span>')+"</td>";
+    html+="<td style='white-space:nowrap'>"+esc(kyoshitsu)+"</td>";
+    html+="<td style='white-space:nowrap'>"+esc(name)+"</td>";
+    html+="<td style='white-space:nowrap'>"+(dob?'<span class="tag ok">'+esc(dob)+'</span>':'<span class="tag ng">未登録</span>')+"</td>";
+    rounds.forEach(function(rd){
+      var names=getStudents(r,rd.s,rd.n);
+      html+='<td class="round-cell">'+renderStudentCell(names)+"</td>";
+    });
     html+="</tr>";
   });
   document.getElementById("tbody").innerHTML=html;
   document.getElementById("s-total").textContent=recs.length;
   document.getElementById("s-ok").textContent=ok;
   document.getElementById("s-ng").textContent=ng;
-}
-
-function buildDetail(r){
-  var html="";
-  var days=[
-    {l:"第1回",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",n:"１日目会場注意事項",s:"第1回受講生",dn:"第1回申込日",nn:"第1回受講生氏名",tn:"第1回携帯電話番号"},
-    {l:"第2回",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",n:"２日目会場注意事項",s:"第2回受講生",dn:"第2回申込日",nn:"第2回受講生氏名",tn:"第2回携帯電話番号"},
-    {l:"第3回",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",n:"_3日目会場注意事項",s:"第3回受講生",dn:"第3回申込日",nn:"第3回受講生氏名",tn:"第3回携帯電話番号"},
-    {l:"第4回",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",n:"_4日目会場注意事項",s:"第4回受講生",dn:"第4回申込日",nn:"第4回受講生氏名",tn:"第4回携帯電話番号"}
-  ];
-  days.forEach(function(d){
-    var venue=get(r,d.v);
-    if(!venue)return;
-    html+="<div style='margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e3f2fd'>";
-    html+="<div style='font-weight:bold;color:#1565c0;margin-bottom:6px'>"+esc(d.l)+" "+esc(venue)+"</div>";
-    if(get(r,d.a))html+="<div class='dtl-row'><span class='dtl-lbl'>住所</span><span class='dtl-val'>"+esc(get(r,d.a))+"</span></div>";
-    if(get(r,d.c))html+="<div class='dtl-row'><span class='dtl-lbl'>定員</span><span class='dtl-val'>"+esc(get(r,d.c))+"名</span></div>";
-    var rows=r[d.s]&&r[d.s].value?r[d.s].value:[];
-    var valid=rows.filter(function(x){return x.value&&x.value[d.nn]&&x.value[d.nn].value;});
-    if(valid.length>0){
-      html+="<div style='margin-top:6px'><table class='sub-tbl'><thead><tr><th>申込日</th><th>氏名</th><th>電話</th></tr></thead><tbody>";
-      valid.forEach(function(x){
-        html+="<tr><td>"+esc(x.value[d.dn]?x.value[d.dn].value:"")+"</td><td>"+esc(x.value[d.nn]?x.value[d.nn].value:"")+"</td><td>"+esc(x.value[d.tn]?x.value[d.tn].value:"")+"</td></tr>";
-      });
-      html+="</tbody></table></div>";
-    }
-    html+="</div>";
-  });
-  return html||"<span class='no-data'>会場未登録</span>";
 }
 
 function filterTable(){
