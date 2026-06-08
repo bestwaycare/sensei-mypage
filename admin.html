@@ -102,7 +102,7 @@ function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").
 function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
 
 function loadAll(){
-  fetch(qu("limit 100 order by レコード番号 asc"),{headers:{"X-Cybozu-API-Token":TK}})
+  fetch(qu("$id > 0 limit 100"),{headers:{"X-Cybozu-API-Token":TK}})
   .then(function(r){return r.json();})
   .then(function(d){
     allRecs=d.records||[];
