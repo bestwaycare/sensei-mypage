@@ -39,6 +39,31 @@ tr:hover td{background:#f0f7ff}
 .r-name{display:block;padding:2px 0;border-bottom:1px solid #f5f5f5;white-space:nowrap}
 .r-name:last-child{border-bottom:none}
 .r-empty{color:#ccc;font-size:11px}
+.prev-btn{background:#1565c0;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap}
+.prev-btn:hover{background:#0d47a1}
+/* モーダル */
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:100;overflow-y:auto}
+.modal-bg.open{display:block}
+.modal{background:#f0f4f8;max-width:500px;margin:20px auto;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.modal-hd{background:#2e7d32;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.modal-hd h2{font-size:16px}
+.modal-close{background:rgba(255,255,255,.2);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:13px;cursor:pointer}
+.modal-body{padding:12px}
+.msc{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.msc h3{font-size:14px;color:#2e7d32;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #e8f5e9}
+.ir{display:block;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.ir:last-child{border-bottom:none}
+.il{display:block;color:#888;font-size:11px;font-weight:bold;margin-bottom:2px}
+.iv{display:block;font-size:13px;line-height:1.5;word-break:break-all}
+.rs{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.rh{display:flex;align-items:center;margin-bottom:10px}
+.rh h3{font-size:14px;color:#2e7d32}
+.badge{background:#e8f5e9;color:#2e7d32;font-size:11px;font-weight:bold;padding:2px 7px;border-radius:10px;margin-left:7px}
+.tw{overflow-x:auto}
+.st{width:100%;border-collapse:collapse;font-size:12px;min-width:260px}
+.st th{background:#e8f5e9;padding:6px 8px;text-align:left;color:#1b5e20;font-size:11px}
+.st td{padding:7px 8px;border-bottom:1px solid #f0f0f0}
+.nd{text-align:center;color:#bbb;padding:16px;font-size:12px}
 </style>
 </head>
 <body>
@@ -70,6 +95,7 @@ tr:hover td{background:#f0f7ff}
       <table>
         <thead>
           <tr>
+            <th></th>
             <th>&#x6559;&#x5ba4;&#x540d;</th>
             <th>&#x5148;&#x751f;&#x540d;</th>
             <th>&#x751f;&#x5e74;&#x6708;&#x65e5;</th>
@@ -84,6 +110,18 @@ tr:hover td{background:#f0f7ff}
     </div>
   </div>
 </div>
+
+<!-- プレビューモーダル -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hd">
+      <h2 id="modalTitle"></h2>
+      <button class="modal-close" onclick="closeModalDirect()">&#x9589;&#x3058;&#x308b;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <script>
 var P="https://corsproxy.io/?url=",D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
 var allRecs=[];
@@ -108,19 +146,19 @@ function loadAll(){
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.code){
-      document.getElementById("loading").innerHTML="<p style='color:#c62828'>Kintoneエラー: "+esc(d.code)+" - "+esc(d.message)+"</p>";
+      document.getElementById("loading").innerHTML="<p style='color:#c62828'>Kintone&#x30a8;&#x30e9;&#x30fc;: "+esc(d.code)+" - "+esc(d.message)+"</p>";
       return;
     }
     allRecs=d.records||[];
     document.getElementById("loading").style.display="none";
     document.getElementById("main").style.display="block";
     var now=new Date();
-    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+"取得";
-    document.getElementById("totalCount").textContent=allRecs.length+"件";
+    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+"&#x53d6;&#x5f97;";
+    document.getElementById("totalCount").textContent=allRecs.length+"&#x4ef6;";
     renderTable(allRecs);
   })
   .catch(function(e){
-    document.getElementById("loading").innerHTML="<p style='color:#c62828'>取得失敗: "+String(e)+"</p><p>ページを再読み込みしてください</p>";
+    document.getElementById("loading").innerHTML="<p style='color:#c62828'>&#x53d6;&#x5f97;&#x5931;&#x6557;: "+String(e)+"</p><p>&#x30da;&#x30fc;&#x30b8;&#x3092;&#x518d;&#x8aad;&#x307f;&#x8fbc;&#x307f;&#x3057;&#x3066;&#x304f;&#x3060;&#x3055;&#x3044;</p>";
   });
 }
 
@@ -133,15 +171,16 @@ function renderTable(recs){
     {s:"第4回受講生",n:"第4回受講生氏名"}
   ];
   var html="";
-  recs.forEach(function(r){
+  recs.forEach(function(r,i){
     var name=get(r,"文字列__1行_");
     var dob=get(r,"生年月日");
     var kyoshitsu=get(r,"教室名");
     if(dob)ok++;else ng++;
     html+="<tr>";
+    html+='<td><button class="prev-btn" onclick="showPreview('+i+')">&#x30d7;&#x30ec;&#x30d3;&#x30e5;&#x30fc;</button></td>';
     html+="<td style='white-space:nowrap'>"+esc(kyoshitsu)+"</td>";
     html+="<td style='white-space:nowrap'>"+esc(name)+"</td>";
-    html+="<td style='white-space:nowrap'>"+(dob?'<span class="tag ok">'+esc(dob)+'</span>':'<span class="tag ng">未登録</span>')+"</td>";
+    html+="<td style='white-space:nowrap'>"+(dob?'<span class="tag ok">'+esc(dob)+'</span>':'<span class="tag ng">&#x672a;&#x767b;&#x9332;</span>')+"</td>";
     rounds.forEach(function(rd){
       var names=getStudents(r,rd.s,rd.n);
       html+='<td class="round-cell">'+renderStudentCell(names)+"</td>";
@@ -152,6 +191,72 @@ function renderTable(recs){
   document.getElementById("s-total").textContent=recs.length;
   document.getElementById("s-ok").textContent=ok;
   document.getElementById("s-ng").textContent=ng;
+}
+
+function showPreview(idx){
+  var r=allRecs[idx];
+  var name=get(r,"文字列__1行_");
+  document.getElementById("modalTitle").textContent=name+" &#x306e;&#x30de;&#x30a4;&#x30da;&#x30fc;&#x30b8;";
+  document.getElementById("modalBody").innerHTML=buildPreview(r);
+  document.getElementById("modalBg").classList.add("open");
+}
+
+function closeModal(e){if(e.target===document.getElementById("modalBg"))closeModalDirect();}
+function closeModalDirect(){document.getElementById("modalBg").classList.remove("open");}
+
+function row(l,v){if(!v)return"";return'<div class="ir"><span class="il">'+l+'</span><span class="iv">'+esc(v).split("\n").join("<br>")+'</span></div>';}
+
+function buildPreview(r){
+  var html="";
+  // 基本情報
+  html+='<div class="msc"><h3>&#x57fa;&#x672c;&#x60c5;&#x5831;</h3>';
+  html+=row("&#x6559;&#x5ba4;&#x540d;",get(r,"教室名"));
+  html+=row("&#x5bfe;&#x5fdc;&#x5730;&#x57df;",get(r,"文字列__1行__0"));
+  var zip=get(r,"送付先郵便番号"),addr=get(r,"送付先住所"),ban=get(r,"送付先番地");
+  var addrFull=(zip?zip+" ":"")+addr+(ban?" "+ban:"");
+  html+=row("&#x9001;&#x4ed8;&#x5148;&#x4f4f;&#x6240;",addrFull);
+  html+="</div>";
+
+  // 会場情報
+  var days=[
+    {l:"&#x7b2c;1&#x56de;",v:"１日目会場",a:"１日目会場住所",c:"１日目定員",n:"１日目会場注意事項"},
+    {l:"&#x7b2c;2&#x56de;",v:"２日目会場",a:"２日目会場住所",c:"２日目定員",n:"２日目会場注意事項"},
+    {l:"&#x7b2c;3&#x56de;",v:"_3日目会場",a:"_3日目会場住所",c:"_3日目定員",n:"_3日目会場注意事項"},
+    {l:"&#x7b2c;4&#x56de;",v:"_4日目会場_0",a:"_4日目会場住所",c:"_4日目定員",n:"_4日目会場注意事項"}
+  ];
+  days.forEach(function(d){
+    var v=get(r,d.v);
+    if(!v)return;
+    html+='<div class="msc"><h3>&#x1f4cd; '+d.l+' '+esc(v)+'</h3>';
+    html+=row("&#x4f4f;&#x6240;",get(r,d.a));
+    html+=(get(r,d.c)?row("&#x5b9a;&#x54e1;",get(r,d.c)+" &#x540d;"):"");
+    html+=row("&#x6ce8;&#x610f;&#x4e8b;&#x9805;",get(r,d.n));
+    html+="</div>";
+  });
+
+  // 受講生
+  var rounds=[
+    {l:"&#x7b2c;1&#x56de;",s:"第1回受講生",d:"第1回申込日",n:"第1回受講生氏名",t:"第1回携帯電話番号"},
+    {l:"&#x7b2c;2&#x56de;",s:"第2回受講生",d:"第2回申込日",n:"第2回受講生氏名",t:"第2回携帯電話番号"},
+    {l:"&#x7b2c;3&#x56de;",s:"第3回受講生",d:"第3回申込日",n:"第3回受講生氏名",t:"第3回携帯電話番号"},
+    {l:"&#x7b2c;4&#x56de;",s:"第4回受講生",d:"第4回申込日",n:"第4回受講生氏名",t:"第4回携帯電話番号"}
+  ];
+  rounds.forEach(function(rd){
+    var rows=r[rd.s]&&r[rd.s].value?r[rd.s].value:[];
+    var valid=rows.filter(function(x){return x.value&&x.value[rd.n]&&x.value[rd.n].value;});
+    html+='<div class="rs"><div class="rh"><h3>'+rd.l+'</h3><span class="badge">'+valid.length+' &#x540d;</span></div>';
+    if(valid.length>0){
+      html+='<div class="tw"><table class="st"><thead><tr><th>&#x7533;&#x8fbc;&#x65e5;</th><th>&#x6c0f;&#x540d;</th><th>&#x96fb;&#x8a71;</th></tr></thead><tbody>';
+      valid.forEach(function(x){
+        html+="<tr><td>"+esc(x.value[rd.d]?x.value[rd.d].value:"")+"</td><td>"+esc(x.value[rd.n]?x.value[rd.n].value:"")+"</td><td>"+esc(x.value[rd.t]?x.value[rd.t].value:"")+"</td></tr>";
+      });
+      html+='</tbody></table></div>';
+    }else{
+      html+='<div class="nd">&#x53d7;&#x8b1b;&#x751f;&#x672a;&#x767b;&#x9332;</div>';
+    }
+    html+="</div>";
+  });
+  return html;
 }
 
 function filterTable(){
