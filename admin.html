@@ -211,7 +211,7 @@ function buildPreview(r){
   // 基本情報
   html+='<div class="msc"><h3>&#x57fa;&#x672c;&#x60c5;&#x5831;</h3>';
   html+=row("&#x6559;&#x5ba4;&#x540d;",get(r,"教室名"));
-  html+=row("&#x5bfe;&#x5fdc;&#x5730;&#x57df;",get(r,"文字列__1行__0"));
+
   var zip=get(r,"送付先郵便番号"),addr=get(r,"送付先住所"),ban=get(r,"送付先番地");
   var addrFull=(zip?zip+" ":"")+addr+(ban?" "+ban:"");
   html+=row("&#x9001;&#x4ed8;&#x5148;&#x4f4f;&#x6240;",addrFull);
