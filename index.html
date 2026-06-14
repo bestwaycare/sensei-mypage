@@ -88,5 +88,6 @@ function renderS(){var rounds=[{l:"&#x7b2c;1&#x56de;",c:"\u7b2c1\u56de\u53d7\u8b
 var h="";rounds.forEach(function(r){var rows=rec[r.c]&&rec[r.c].value?rec[r.c].value:[];h+='<div class="rs"><div class="rh"><h3>'+r.l+'</h3><span class="badge">'+rows.length+" &#x540d;</span></div>";
 if(rows.length>0){h+='<div class="tw"><table class="st"><thead><tr><th>&#x7533;&#x8fbc;&#x65e5;</th><th>&#x6c0f;&#x540d;</th><th>&#x96fb;&#x8a71;&#x756a;&#x53f7;</th></tr></thead><tbody>';rows.forEach(function(row){h+="<tr><td>"+esc(row.value[r.d]?row.value[r.d].value:"")+"</td><td>"+esc(row.value[r.n]?row.value[r.n].value:"")+"</td><td>"+esc(row.value[r.t]?row.value[r.t].value:"")+"</td></tr>";});h+='</tbody></table></div>';}else{h+='<div class="nd">&#x53d7;&#x8b1b;&#x751f;&#x672a;&#x767b;&#x9332;</div>';}h+="</div>";});
 document.getElementById("sc2").innerHTML=h;}
+var _sn=localStorage.getItem("sensei_nm");if(_sn){document.getElementById("nm").value=_sn;}
 document.addEventListener("keydown",function(e){if(e.key==="Enter"&&document.getElementById("ls").style.display!=="none")doL();});
 </script></body></html>
