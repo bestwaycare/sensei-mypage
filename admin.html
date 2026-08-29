@@ -142,7 +142,7 @@ function renderStudentCell(names){
 }
 
 function loadAll(){
-  fetch(qu("$id > 0 limit 100"))
+  fetch(qu("$id > 0 limit 100"),{headers:{"X-Cybozu-API-Token":TK}})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.code){
