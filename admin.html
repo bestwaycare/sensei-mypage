@@ -123,9 +123,9 @@ tr:hover td{background:#f0f7ff}
 </div>
 
 <script>
-var P="https://corsproxy.io/?url=",D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
+D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
 var allRecs=[];
-function qu(q){return P+encodeURIComponent("https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q)+"&_t="+Date.now());}
+function qu(q){return "https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q)+"&_t="+Date.now();}
 function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
 
