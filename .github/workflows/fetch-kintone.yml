@@ -7,9 +7,9 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Fetch from Kintone
-        run: curl -sf "https://azoch3bdyyq2.cybozu.com/k/v1/records.json?app=267&apiToken=SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B&query=%24id%20%3E%200%20limit%20100" -o kintone-data.json
+        run: curl -sf -H "X-Cybozu-API-Token: SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B" "https://azoch3bdyyq2.cybozu.com/k/v1/records.json?app=267&query=%24id%20%3E%200%20limit%20100" -o kintone-data.json
       - name: Commit and push
         run: |
           git config user.email "action@github.com"
