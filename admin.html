@@ -125,7 +125,7 @@ tr:hover td{background:#f0f7ff}
 <script>
 D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
 var allRecs=[];
-var P="https://corsproxy.io/?url=";function qu(q){return P+encodeURIComponent("https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q)+"&_t="+Date.now());}
+function qu(q){var ku="https://"+D+"/k/v1/records.json?app="+A+"&apiToken="+TK+"&query="+encodeURIComponent(q)+"&_t="+Date.now();return "https://api.allorigins.win/raw?url="+encodeURIComponent(ku);}
 function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
 
@@ -142,7 +142,7 @@ function renderStudentCell(names){
 }
 
 function loadAll(){
-  fetch(qu("$id > 0 limit 100"),{headers:{"X-Cybozu-API-Token":TK}})
+  fetch(qu("$id > 0 limit 100"))
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.code){
