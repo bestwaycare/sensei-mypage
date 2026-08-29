@@ -66,11 +66,11 @@ body{font-family:-apple-system,sans-serif;background:#f0f4f8;color:#333}
 <div id="ts" class="tc"><div id="sc2"></div></div>
 </div>
 <script>
-var P="https://corsproxy.io/?url=",D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
+D="azoch3bdyyq2.cybozu.com",A=267,TK="SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B";
 var rec=null;
 function esc(v){return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function row(l,v){if(!v)return"";return'<div class="ir"><span class="il">'+l+'</span><span class="iv">'+esc(v).split("\n").join("<br>")+'</span></div>';}
-function qu(q){return P+encodeURIComponent("https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q)+"&_t="+Date.now());}
+function qu(q){return "https://"+D+"/k/v1/records.json?app="+A+"&query="+encodeURIComponent(q)+"&_t="+Date.now();}
 function get(c){return rec[c]&&rec[c].value?rec[c].value:"";}
 function sw(t,b){document.querySelectorAll(".tb").forEach(function(x){x.classList.remove("active");});document.querySelectorAll(".tc").forEach(function(x){x.classList.remove("active");});b.classList.add("active");document.getElementById(t==="v"?"tv":"ts").classList.add("active");}
 function doO(){rec=null;document.getElementById("ms").style.display="none";document.getElementById("ls").style.display="block";document.getElementById("nm").value=localStorage.getItem("sensei_name")||"";document.getElementById("dob").value="1950-01-01";document.getElementById("em").style.display="none";sw("v",document.getElementById("t1"));}
