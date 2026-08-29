@@ -1,0 +1,19 @@
+name: Fetch Kintone Data
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Fetch from Kintone
+        run: curl -sf "https://azoch3bdyyq2.cybozu.com/k/v1/records.json?app=267&apiToken=SSE6S1AfjBmvoXVF2fkZMSJXIvrFhzfGyQW0Cn8B&query=%24id%20%3E%200%20limit%20100" -o kintone-data.json
+      - name: Commit and push
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add kintone-data.json
+          git diff --staged --quiet || git commit -m "update: kintone data"
+          git push
