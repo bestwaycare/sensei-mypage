@@ -142,7 +142,7 @@ function renderStudentCell(names){
 }
 
 function loadAll(){
-  fetch(qu("$id > 0 limit 100"))
+  fetch('kintone-data.json')
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.code){
