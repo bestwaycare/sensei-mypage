@@ -153,8 +153,8 @@ function loadAll(){
     document.getElementById("loading").style.display="none";
     document.getElementById("main").style.display="block";
     var now=new Date();
-    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+"&#x53d6;&#x5f97;";
-    document.getElementById("totalCount").textContent=allRecs.length+"&#x4ef6;";
+    document.getElementById("lastUpdate").textContent=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate()+" "+now.getHours()+":"+String(now.getMinutes()).padStart(2,"0")+" 取得";
+    document.getElementById("totalCount").textContent=allRecs.length+"件";
     renderTable(allRecs);
   })
   .catch(function(e){
