@@ -131,8 +131,13 @@ function get(r,c){return r[c]&&r[c].value?r[c].value:"";}
 
 function getStudents(r,subtable,nameField){
   var rows=r[subtable]&&r[subtable].value?r[subtable].value:[];
+  var dateField=nameField.replace("氏名","申込日");
   return rows.filter(function(x){return x.value;})
-             .map(function(x){return x.value[nameField]?x.value[nameField].value:"";});
+             .map(function(x){
+               var nm=x.value[nameField]?x.value[nameField].value:"";
+               if(!nm&&x.value[dateField])nm=x.value[dateField].value||"";
+               return nm||"（記載なし）";
+             });
 }
 
 function renderStudentCell(names){
